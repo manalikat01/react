@@ -62,6 +62,7 @@ const Chart: React.FC<{ filter: RequestToCandle }> = ({
             series={options.series}
             type="candlestick"
             height={320}
+            width={550}
           />
           :
           <Card className="no-chart">Data not available!</Card>

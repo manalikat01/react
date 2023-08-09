@@ -1,5 +1,3 @@
-import dayjs, { Dayjs } from "dayjs"
-
 export type Symbol = {
   currency: string,
   description: string,
@@ -15,12 +13,6 @@ export type Symbol = {
 
 export type Stock = {
   c: any[], o: any[], l: any[], h: any[], t: any[], s: string
-}
-
-export type ChartFilter = {
-  from: any,
-  to: any,
-  resolution: string
 }
 
 export type ChartSeries = {

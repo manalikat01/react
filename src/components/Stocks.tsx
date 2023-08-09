@@ -8,7 +8,7 @@ import { DatePicker, DateValidationError, LocalizationProvider } from "@mui/x-da
 
 import '../App.css';
 import { initialCandleRequest } from "../constant";
-import { useStockContext, useStockRequestContext } from "../context";
+import { useStockContext } from "../context";
 import { fetchStockDetails, RequestToCandle, Symbol } from '../utils';
 
 import Chart from "./Chart";
@@ -19,7 +19,7 @@ export const StockContainer: React.FC = () => {
   const [filter, setFilterValues] = useState<RequestToCandle>(initialCandleRequest); // form values
   const [error, setError] = React.useState<DateValidationError | null>(null); // error 
   const { setStockList } = useStockContext(); // selected values from array
-  const { stockRequest, setStockRequest } = useStockRequestContext(); // request array
+
   const [selectedStocks, setSelectedStocks] = useState([]);
   const [list, setList] = useState([]);
   const [filterProps, setFilterProp] = useState<RequestToCandle>(initialCandleRequest);
@@ -52,10 +52,6 @@ export const StockContainer: React.FC = () => {
 
 
   const handleSubmit = () => {
-    console.log('click', {
-      ...filter,
-      list: selectedStocks
-    })
     setFilterProp({
       ...filter,
       list: selectedStocks
@@ -104,6 +100,7 @@ export const StockContainer: React.FC = () => {
                   }}
                   id="checkboxes-tags-demo"
                   options={list}
+                  value={selectedStocks}
                   disableCloseOnSelect
                   onChange={handleChangeStocks}
                   getOptionLabel={(option: Symbol) => option && option.displaySymbol ? option.displaySymbol : ''}

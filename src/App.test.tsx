@@ -4,6 +4,7 @@
 import { act, render } from '@testing-library/react';
 import { test } from '@jest/globals';
 import App from './App';
+import { InfoContainer } from './components';
 
 test('Renders Root component',  async () => {
     const { container }=  await act( async () => render(<App/>));
@@ -11,3 +12,12 @@ test('Renders Root component',  async () => {
 
 });
 
+describe('Render Stocks Available', () => {
+    it('should render stock static UI', async () => {
+        const { container }=  render(<InfoContainer/>);
+        expect(container.firstChild).toHaveClass('title');
+        // expect(screen.getByText('US Stock Exchange'));
+        // expect(screen.getByText('You can select at most 3 stock for  detail pricing'));
+    
+    });
+});

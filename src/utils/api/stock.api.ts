@@ -1,4 +1,3 @@
-import dayjs, { Dayjs } from 'dayjs';
 import { basePath } from '../../constant';
 import { convertDateToUnixTimestamp } from '../helpers';
 
@@ -21,10 +20,6 @@ export const fetchHistoricalData = async (
 ) => {
   const fromDate = convertDateToUnixTimestamp(from)
   const toDate = convertDateToUnixTimestamp(to);
-  console.log(fromDate, toDate );
-  // const {[fromDate, toData} = {
-    // }
-    //   convertDateToUnixTimestamp(from), convertDateToUnixTimestamp(to)
   const requests = list.map((entry) => fetch(`${basePath}/stock/candle?symbol=${entry.symbol}&exchange=US&resolution=${resolution}&from=${fromDate}&to=${toDate}&token=${process.env.REACT_APP_API_KEY}`));
   const responses = await Promise.all(requests);
   console.log(responses );
