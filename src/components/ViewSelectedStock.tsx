@@ -1,27 +1,25 @@
-import React from 'react';
+import React, { memo } from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 
-import { useStockContext } from '../context';
-import { Symbol } from '../utils';
-
 // View Selected Stock
-export const ViewStock: React.FC = () => {
-  const { stockList } = useStockContext();
+const ViewStock: React.FC<{ stocksSelected: Symbol[] }> = ({
+  stocksSelected
+}) => {
 
   return (
     <div className="card-view">
 
-    {stockList && stockList.length > 0 ?
-        stockList.map((ele: Symbol, index: number) => {
+      {stocksSelected && stocksSelected.length > 0 ?
+        stocksSelected.map((ele: any, index: number) => {
           return (
             <Card sx={{ maxWidth: 345, margin: 2 }} key={index}>
               <CardContent>
                 <Typography variant="h5" component="div">
                   {ele.displaySymbol}
                   <Typography
-                    sx={{ fontSize: 14 , marginLeft: 2 }}
+                    sx={{ fontSize: 14, marginLeft: 2 }}
                     color="text.secondary"
                     gutterBottom
                     component="span"
@@ -41,11 +39,13 @@ export const ViewStock: React.FC = () => {
               </CardContent>
             </Card>
           );
-        })
-        : <div className="no-selected-stock">
-            No stock selected yet!
+        }) : <div className="no-selected-stock">
+          No stock selected yet!
         </div>
       }
     </div>
   );
 };
+
+export default memo(ViewStock);
+

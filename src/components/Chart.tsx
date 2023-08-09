@@ -1,15 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 import Card from '@mui/material/Card';
 
-import { chartOptions, rangeFilter } from "../constant";
-import { useStockContext } from "../context";
-import { ChartFilterComponent } from './FilterChart';
-import { convertDateToUnixTimestamp, convertStockToChart, ChartFilter, ChartSeries, fetchHistoricalData, Stock, } from "../utils";
+import { chartOptions } from "../constant";
+import {  convertStockToChart,  ChartSeries, fetchHistoricalData,  RequestToCandle, } from "../utils";
 
-export const StockChart: React.FC = () => {
-  const { stockList } = useStockContext()
-  const [req, setReq] = useState<ChartFilter>(rangeFilter)
+const Chart: React.FC<{ filter: RequestToCandle }> = ({
+  filter
+}) => {
 
   const [options, setOption] = useState<{
     series: ChartSeries[],
@@ -19,22 +17,19 @@ export const StockChart: React.FC = () => {
     option: chartOptions
   });
 
-
-
-
   const updateChart = async () => {
     try {
       const result = await fetchHistoricalData(
-        req.resolution,
-        req.from ? convertDateToUnixTimestamp(new Date(req.from)) : 0,
-        convertDateToUnixTimestamp(new Date(req.to)),
-        stockList
+        filter.resolution,
+        filter.from,
+        filter.to,
+        filter.list
       );
 
       // format data as per chart
-      const format = result.map((res: Stock, index: number) => {
+      const format = result.map((res: any, index: number) => {
         return {
-          name: stockList[index].symbol,
+          name: 'Chart' + index,
           data: res && res['s'] === 'ok' ? convertStockToChart(res) : []
         }
       });
@@ -52,16 +47,16 @@ export const StockChart: React.FC = () => {
     }
   };
 
-
   useEffect(() => {
-    updateChart();
-  }, [stockList, req])
-
+    if(filter && filter.list && filter.list.length >0){
+      updateChart();
+    }
+  }, [filter]);
 
   return (
     <div className="chart-container">
       {
-        options && options.series && options.series.length > 0 && stockList && stockList.length > 0 ?
+        options && options.series && options.series.length > 0 && filter.list && filter.list.length > 0 ?
           <ReactApexChart
             options={options.option}
             series={options.series}
@@ -72,5 +67,7 @@ export const StockChart: React.FC = () => {
           <Card className="no-chart">Data not available!</Card>
       }
     </div>
-  )
+  );
 };
+
+export default memo(Chart);

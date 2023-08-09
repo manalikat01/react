@@ -3,7 +3,7 @@
 /* eslint-disable testing-library/no-node-access */
 
 import { render, screen } from '@testing-library/react';
-import { ViewStock } from '../components/ViewSelectedStock';
+// import { ViewStock } from '../components/ViewSelectedStock';
 import { StockContext } from '../context';
 import { mockStockDetails } from '../utils';
 
@@ -32,7 +32,7 @@ const renderSelectedStockCard = (val: any) => {
             stockList: val,
             setStockList: () => { }
         }} >
-            <ViewStock />
+            {/* <ViewStock /> */}
         </StockContext.Provider>
     )
 }

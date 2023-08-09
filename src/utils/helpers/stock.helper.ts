@@ -1,7 +1,7 @@
 import { Stock } from "../types";
 
 /* Convert Date to UnixTimestamp*/
-export const convertDateToUnixTimestamp = (date:Date) => {
+export const convertDateToUnixTimestamp = (date: any) => {
   return Math.floor(date.getTime() / 1000);
 };
 
@@ -19,3 +19,5 @@ export const convertStockToChart = (data: Stock) => {
     };
   }) : [];
 };
+
+export const subtractYears= () => new Date(new Date().setFullYear(new Date().getFullYear() - 1))
