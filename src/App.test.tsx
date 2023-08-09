@@ -1,9 +1,13 @@
-import React from 'react';
-import { render, screen } from '@testing-library/react';
+/* eslint-disable testing-library/no-unnecessary-act */
+/* eslint-disable testing-library/no-node-access */
+/* eslint-disable jest/valid-expect */
+import { act, render } from '@testing-library/react';
+import { test } from '@jest/globals';
 import App from './App';
 
-test('renders learn react link', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+test('Renders Root component',  async () => {
+    const { container }=  await act( async () => render(<App/>));
+    expect(container.firstChild).toHaveClass('App');
+
 });
+
