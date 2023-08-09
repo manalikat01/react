@@ -1,7 +1,7 @@
 import { Stock } from "../types";
 
 /* Convert Date to UnixTimestamp*/
-export const convertDateToUnixTimestamp = (date: any) => {
+export const convertDateToUnixTimestamp = (date: Date) => {
   return Math.floor(date.getTime() / 1000);
 };
 

@@ -1,23 +1,21 @@
 import React, { useState, useEffect } from "react";
-import TextField from '@mui/material/TextField';
+import dayjs from "dayjs";
 import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
+import { Button, Card, CardContent } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker, DateValidationError, LocalizationProvider } from "@mui/x-date-pickers";
 
 import '../App.css';
+import { initialCandleRequest } from "../constant";
 import { useStockContext, useStockRequestContext } from "../context";
-import { fetchStockDetails, RequestToCandle, subtractYears, Symbol } from '../utils';
+import { fetchStockDetails, RequestToCandle, Symbol } from '../utils';
 
-import dayjs from "dayjs";
-import { initialCandleRequest, rangeFilter } from "../constant";
-import { DatePicker, DateValidationError, LocalizationProvider } from "@mui/x-date-pickers";
-import { Button, Card, CardContent } from "@mui/material";
-import ViewStock from "./ViewSelectedStock";
 import Chart from "./Chart";
+import ViewStock from "./ViewSelectedStock";
 
-;
 
-
-export const FilterContainer: React.FC = () => {
+export const StockContainer: React.FC = () => {
   const [filter, setFilterValues] = useState<RequestToCandle>(initialCandleRequest); // form values
   const [error, setError] = React.useState<DateValidationError | null>(null); // error 
   const { setStockList } = useStockContext(); // selected values from array
@@ -54,7 +52,10 @@ export const FilterContainer: React.FC = () => {
 
 
   const handleSubmit = () => {
-
+    console.log('click', {
+      ...filter,
+      list: selectedStocks
+    })
     setFilterProp({
       ...filter,
       list: selectedStocks
