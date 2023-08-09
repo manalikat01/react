@@ -20,12 +20,7 @@ export const StockChart: React.FC = () => {
   });
 
 
-  const updateFilter = (input: ChartFilter) => {
-    setReq({
-      ...req,
-      ...input
-    });
-  }
+
 
   const updateChart = async () => {
     try {
@@ -65,7 +60,6 @@ export const StockChart: React.FC = () => {
 
   return (
     <div className="chart-container">
-      <ChartFilterComponent updateFilter={(input) => updateFilter(input)} />
       {
         options && options.series && options.series.length > 0 && stockList && stockList.length > 0 ?
           <ReactApexChart

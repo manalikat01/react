@@ -10,12 +10,23 @@ import Typography from "@mui/material/Typography";
 import Pagination from '@mui/material/Pagination';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-// import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
-// import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 import '../App.css';
 import { useStockContext } from "../context";
-import { fetchStockDetails, Symbol } from '../utils';
+import { ChartFilter, fetchStockDetails, Symbol } from '../utils';
+import { ViewStock } from "./ViewSelectedStock";
+import { ChartFilterComponent } from "./FilterChart";
+import dayjs from "dayjs";
+import { rangeFilter } from "../constant";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { Button, FormControl } from "@mui/material";
+
+
+const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 // Get list of stock US exchange
 const Stocks: React.FC<{ symbolList: Symbol[] }> = ({
@@ -107,10 +118,10 @@ const GetStocks: React.FC = () => {
 
   useEffect(() => {
     const dataFetch = async () => {
-      try{
+      try {
         const response = await fetchStockDetails();
         setStocks(response);
-      }catch(e){
+      } catch (e) {
         setStocks([]);
       }
     }
@@ -122,82 +133,131 @@ const GetStocks: React.FC = () => {
     };
   }, []);
 
-  useEffect(() => {
-    if (stocks && stocks.length > 0) {
-      const pages = Math.ceil(stocks.length / pageSize);
-      setCount(pages)
-      setStocksData(stocks.slice((page * pageSize) - pageSize, page * pageSize));
-    }
-  }, [page, stocks])
+  // useEffect(() => {
+  //   if (stocks && stocks.length > 0) {
+  //     const pages = Math.ceil(stocks.length / pageSize);
+  //     setCount(pages)
+  //     setStocksData(stocks.slice((page * pageSize) - pageSize, page * pageSize));
+  //   }
+  // }, [page, stocks])
 
 
   return <div className='nav'>
     <Card className="header">
-        US Stock Exchange
+      US Stock Exchange
       <CardContent>You can select at most 3 stock for  detail pricing</CardContent>
     </Card>
-    {!stocks
-
-
-      ? <div className="no-data">Loading Stocks</div>
-      : <><SearchStocks stocks={stocks} />
-        <Stocks symbolList={stocksData} /></>
-    }
-
-    <Pagination count={count}
-      onChange={(event, value) => setPage(value)} variant="outlined" shape="rounded" />
+    {/* {stocks && stocks.length > 0
+      ?
+      <SearchFilter stocks={stocks} /> : <div className="no-data">Loading Stocks</div>
+    } */}
   </div>
 }
 
-// Request list of stocks 
-// const useStockData = () => {
-//   const [state, setState] = useState([]);
+const SearchFilter: React.FC =() => {
+  const [selectedStocks, setSelectedStocks] = useState([]);
+  const [stockList, setStocksList] = useState([]);
+  const { setStockList } = useStockContext();
 
-//   useEffect(() => {
-//     const dataFetch = async () => {
-//       setState(data);
-//     };
+  useEffect(() => {
+    const getStocks = async () => {
+      try {
+        const response = await fetchStockDetails();
+        setStocksList(response);
+      } catch (e) {
+        setStocksList([]);
+      }
+    }
 
-//     dataFetch();
-//     return () => {
-//       setState([]);
-//     };
-//   }, []);
+    getStocks();
 
-//   return state;
-// };
+    return () => {
+      setStocksList([]);
+    };
+  }, []);
 
+  const handleChange = (event: any, value: any) => {
+    setSelectedStocks(value);
+    setStockList(value);
+  }
+  if(stockList && stockList.length > 0){
+    return (
+      <Autocomplete
+        multiple
+        sx={{
+          width: '100%',
+          maxWidth: 550,
+        }}
+        id="checkboxes-tags-demo"
+        options={stockList}
+        disableCloseOnSelect
+        onChange={handleChange}
+        getOptionLabel={(option: Symbol) => option && option.displaySymbol ? option.displaySymbol : ''}
+        getOptionDisabled={(options) => (selectedStocks.length > 2 ? true : false)}
+        renderGroup={(params) => params as unknown as React.ReactNode}
+        style={{ width: 500 }}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label="Select Stocks for details view"
+            placeholder="Select stock for details view"
+          />
+        )}
+      />
+  
+    );
+  }else{
+    return <div className="no-selected-stock">
+    No stock available
+</div>
+  }
+ 
+}
 
-
-// const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
-// const checkedIcon = <CheckBoxIcon fontSize="small" />;
-
-const SearchStocks: React.FC<{ stocks: Symbol[] }> = ({
+const RangeFilter: React.FC<{ stocks: Symbol[] }> = ({
   stocks
 }) => {
+  const [filter, setFilterValues] = useState(rangeFilter);
+
+  const handleChange = (e: any, key: string) => {
+    setFilterValues((filter) => filter = {
+      ...filter,
+      [key]: dayjs(e)
+    });
+  };
+
+  const handleSubmit = () => {
+    // updateFilter(
+    //   filter
+    // );
+  }
+
   return (
-    <Autocomplete
-      multiple
-      id="checkboxes-tags-demo"
-      options={stocks}
-      disableCloseOnSelect
-      getOptionLabel={(option) => option.displaySymbol}
-      renderOption={(props, option, { selected }) => (
-        <li {...props}>
-          <Checkbox
-            edge="end"
-            style={{ marginRight: 8 }}
-            checked={selected}
-          />
-          {option.displaySymbol}
-        </li>
-      )}
-      style={{ width: 500 }}
-      renderInput={(params) => (
-        <TextField {...params} label="Checkboxes" placeholder="Stocks" />
-      )}
-    />
+    <div className="range-filter">
+    <LocalizationProvider dateAdapter={AdapterDayjs} >
+      <FormControl fullWidth>
+        <DatePicker
+          onChange={(e) => handleChange(e, "from")}
+          maxDate={dayjs(new Date())}
+          value={filter.from}
+        />
+      </FormControl>
+      <FormControl fullWidth>
+        <DatePicker
+          onChange={(e) => handleChange(e, "to")}
+          value={filter.to}
+          minDate={filter.from}
+          maxDate={dayjs(new Date())}
+        />
+      </FormControl>      
+      <div className="button-container">
+      <Button color="primary" size="small" variant="contained" onClick={handleSubmit}>Submit</Button>
+      <Button color="primary" size="small" variant="contained" onClick={handleSubmit}>Reset</Button>  
+      </div>
+    </LocalizationProvider>
+    </div>
+
   );
 }
 
-export { Stocks, GetStocks };
+export { Stocks, GetStocks, SearchFilter, RangeFilter };

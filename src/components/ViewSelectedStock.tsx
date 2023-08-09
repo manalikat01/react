@@ -11,7 +11,7 @@ export const ViewStock: React.FC = () => {
   const { stockList } = useStockContext();
 
   return (
-    <div className="card">
+    <div className="card-view">
 
     {stockList && stockList.length > 0 ?
         stockList.map((ele: Symbol, index: number) => {
@@ -42,9 +42,9 @@ export const ViewStock: React.FC = () => {
             </Card>
           );
         })
-        : <Card className="no-selected-stock">
+        : <div className="no-selected-stock">
             No stock selected yet!
-        </Card>
+        </div>
       }
     </div>
   );

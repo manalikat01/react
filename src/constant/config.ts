@@ -54,7 +54,7 @@ export const chartOptions = {
   yaxis: {
     labels: {
       formatter: (val: number) => {
-        return val.toFixed(2);
+        return val && val.toFixed(2);
       }
     }
   }

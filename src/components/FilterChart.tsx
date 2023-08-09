@@ -42,7 +42,7 @@ export const ChartFilterComponent: React.FC<{ updateFilter: (date: any) => void 
 
   return (
     <div className="filters">
-      <FormControl fullWidth>
+      {/* <FormControl fullWidth>
         <InputLabel id="demo-simple-select-label">Resolution</InputLabel>
         <Select
           labelId="demo-simple-select-label"
@@ -56,9 +56,8 @@ export const ChartFilterComponent: React.FC<{ updateFilter: (date: any) => void 
             return <MenuItem key={`res${index}`} value={ele}>{ele}</MenuItem>
           })}
         </Select>
-      </FormControl>
+      </FormControl> */}
       <LocalizationProvider dateAdapter={AdapterDayjs} >
-        <div className="date-range">
           <FormControl fullWidth>
             <DatePicker
               onChange={(e) => handleChange(e, "from")}
@@ -75,7 +74,6 @@ export const ChartFilterComponent: React.FC<{ updateFilter: (date: any) => void 
             />
           </FormControl>
           <Button color="primary" size="small" variant="contained" onClick={handleSubmit}>Submit</Button>
-        </div>
       </LocalizationProvider>
     </div>
   );
