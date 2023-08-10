@@ -26,8 +26,7 @@ const StockChart: React.FC<{ filter: RequestToCandle }> = ({
   });
 
 
-  const [stockPriceType, setStockPriceType] = useState<string>("all");
-
+  const [stockPriceDefination, setStockPriceType] = useState<string>("all");
   const [stockChartValues, setStockChartValues] = useState<Stock[]>(
     [
       {
@@ -35,7 +34,7 @@ const StockChart: React.FC<{ filter: RequestToCandle }> = ({
 
       }]
   );
-  
+
   const updateChart = async (req: { from: any; to: any; list: any; resolution: any; }) => {
     try {
       const result = await fetchHistoricalData(
@@ -118,7 +117,7 @@ const StockChart: React.FC<{ filter: RequestToCandle }> = ({
   return (
     <div className="chart-container">
       <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">stockPriceType</InputLabel>
+        <InputLabel id="demo-simple-select-label">Select Price Type</InputLabel>
         <Select
           sx={{
             width: '100%',
@@ -126,7 +125,7 @@ const StockChart: React.FC<{ filter: RequestToCandle }> = ({
           }}
           labelId="demo-simple-select-label"
           id="demo-simple-select"
-          value={stockPriceType}
+          value={stockPriceDefination}
           label="Select Price"
           onChange={(e) => handleChangeType(e)}
 
@@ -140,18 +139,18 @@ const StockChart: React.FC<{ filter: RequestToCandle }> = ({
 
         </Select>
       </FormControl>
-      {stockPriceType == "all" ?
+      {stockPriceDefination == "all" ?
         <ReactApexChart
           options={options.option}
           series={options.series}
-          stockPriceType={"candlestick"}
+          type={"candlestick"}
           height={320}
           width={700}
           key="candlestick"
         /> :
         <ReactApexChart options={lineOptions.option}
           series={lineOptions.series}
-          stockPriceType={"area"}
+          type={"area"}
           height={320}
           width={700}
           key="area"

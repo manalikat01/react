@@ -9,43 +9,140 @@ import { DatePicker, DateValidationError, LocalizationProvider } from "@mui/x-da
 import '../App.css';
 import { initialCandleRequest } from "../constant";
 import { useStockContext } from "../context";
-import { fetchStockDetails, RequestToCandle } from '../utils';
+import { fetchStockDetails, RequestToCandle, Symbol } from '../utils';
 
 import StockChart from "./StockChart";
 import { ViewSelectedStock } from "./ViewSelectedStock";
 
 
-export const Stocks: React.FC = () => {
-  const [filter, setFilterValues] = useState<RequestToCandle>(initialCandleRequest); // form values
-  const [error, setError] = React.useState<DateValidationError | null>(null); // error 
-  const { setStockList } = useStockContext(); // selected values from array
+const defaultFilterOptions = createFilterOptions();
 
-  const [selectedStocks, setSelectedStocks] = useState([]);
-  const [list, setList] = useState([]);
-  const [filterProps, setFilterProp] = useState<RequestToCandle>(initialCandleRequest);
+const filterOptions = (options: any[], state: any) => {
+  return defaultFilterOptions(options, state).slice(0, 100);
+};
+
+export const SearchContainer: React.FC<{
+  handleSelectedStocks: (selectedStocks: Symbol[]) => void
+}> = ({
+  handleSelectedStocks
+}) => {
+    const [selectedStocks, setSelectedStocks] = useState([]);
+    // const [error, setError] = useState(false);
+    const [stocks, setStocksAvailable] = useState([]);
+
+    const handleChangeStocks = (event: any, value: any) => {
+      setSelectedStocks(value);
+      handleSelectedStocks(value)
+      // setError(value < 3);
+    };
+
+
+    useEffect(() => {
+      const getStocks = async () => {
+        try {
+          const response = await fetchStockDetails();
+          setStocksAvailable(response);
+        } catch (e) {
+          setStocksAvailable([]);
+        }
+      }
+
+      getStocks();
+
+      return () => {
+        setStocksAvailable([]);
+      };
+    }, []);
+
+    return <div className="search-filter">
+      <Autocomplete
+        multiple
+        sx={{
+          width: '100%',
+          maxWidth: 550,
+        }}
+        data-testid="autocomplete-input"
+        options={stocks}
+        value={selectedStocks}
+        filterOptions={filterOptions}
+        disableCloseOnSelect
+        onChange={handleChangeStocks}
+        getOptionLabel={(option: any) => option && option.displaySymbol ? option.displaySymbol : ''}
+        getOptionDisabled={(options) => (selectedStocks.length > 2 ? true : false)}
+        renderGroup={(params) => params as unknown as React.ReactNode}
+        style={{ width: 500 }}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            placeholder="Select stock for details view"
+          // error={error}
+          // helperText={error && "You can select at most 3 stock!"}
+          />
+        )}
+      />
+    </div>
+  }
+
+
+export const DateInput: React.FC<{
+  handleSelectedDates: (selectedDates: any, name: string) => void;
+  name: string;
+  minDate?: Date;
+  maxDate?: Date;
+  defaultValue: Date
+}> = ({ handleSelectedDates, name, minDate, maxDate, defaultValue }) => {
+  const [error, setError] = React.useState<DateValidationError | null>(null);
 
   const errorMessage = React.useMemo(() => {
     switch (error) {
+      case 'maxDate':
+      case 'minDate': {
+        return 'Please select valid date range';
+      }
+
       case 'invalidDate': {
         return 'Your date is not valid';
       }
+
       default: {
         return '';
       }
     }
-  }, [error])
+  }, [error]);
 
-  const handleChangeStocks = (event: any, value: any) => {
-    setSelectedStocks(value);
-    setStockList(value);
-  };
+  useEffect(() => {
+    console.log(error, 'error');
+  }, [error]);
 
-  const handleChangeDates = (e: any, key: string) => {
-    setFilterValues((filter) => filter = {
-      ...filter,
-      [key]: dayjs(e)
-    });
+  const handleChangeDates = (e: any) => {
+    if (!error && errorMessage == '') {
+      handleSelectedDates(e, name);
+    }
   };
+  return (
+    <DatePicker
+      defaultValue={dayjs(defaultValue)}
+      onError={(newError) => setError(newError)}
+      onChange={(e) => handleChangeDates(e)}
+      slotProps={{
+        textField: {
+          helperText: error ? errorMessage : '',
+        },
+      }}
+      minDate={dayjs(minDate)}
+      maxDate={dayjs(maxDate)}
+    />
+  );
+};
+
+export const Stocks: React.FC = () => {
+  const [filter, setFilterValues] = useState<RequestToCandle>(initialCandleRequest); // form values
+  const { setStockList } = useStockContext(); // selected values from array
+
+  const [selectedStocks, setSelectedStocks] = useState<Symbol[]>([]);
+  const [filterProps, setFilterProp] = useState<RequestToCandle>(initialCandleRequest);
+
+
 
   const handleSubmit = () => {
     setFilterProp({
@@ -64,67 +161,29 @@ export const Stocks: React.FC = () => {
     })
   }
 
-  useEffect(() => {
-    const getStocks = async () => {
-      try {
-        const response = await fetchStockDetails();
-        setList(response);
-      } catch (e) {
-        setList([]);
-      }
-    }
 
-    getStocks();
+  const handleSelectedStocks = (selectedStocks: Symbol[]) => {
+    console.log(selectedStocks);
+    setSelectedStocks(selectedStocks);
+  }
 
-    return () => {
-      setList([]);
-    };
-  }, []);
-
-  const defaultFilterOptions = createFilterOptions();
-
-  const filterOptions = (options: any[], state: any) => {
-    return defaultFilterOptions(options, state).slice(0, 100);
+  const handleSelectedDates = (e: any, name: string) => {
+    console.log(e, name);
   };
+
   return (
     <div className="App">
       <div className="header">
         <InfoContainer />
         <div className="filter-container">
-          <div className="search-filter">
-            {
-              list && list.length > 0 ?
-                <Autocomplete
-                  multiple
-                  sx={{
-                    width: '100%',
-                    maxWidth: 550,
-                  }}
-                  data-testid="autocomplete-input"
-                  options={list}
-                  value={selectedStocks}
-                  filterOptions={filterOptions}
-                  disableCloseOnSelect
-                  onChange={handleChangeStocks}
-                  getOptionLabel={(option: any) => option && option.displaySymbol ? option.displaySymbol : ''}
-                  getOptionDisabled={(options) => (selectedStocks.length > 2 ? true : false)}
-                  renderGroup={(params) => params as unknown as React.ReactNode}
-                  style={{ width: 500 }}
 
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      placeholder="Select stock for details view"
-                    />
-                  )}
-                /> : <div className="no-selected-stock">
-                  No stock available
-                </div>
-            }
-          </div>
+          <SearchContainer handleSelectedStocks={handleSelectedStocks} />
+
+
+          {/* </div> */}
           <div className="range-filter">
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
+              {/* <DatePicker
                 onChange={(e) => handleChangeDates(e, "from")}
                 value={dayjs(filter.from)}
                 slotProps={{
@@ -149,6 +208,24 @@ export const Stocks: React.FC = () => {
                   },
                 }}
                 data-testid="to-date"
+
+              /> */}
+
+              <DateInput 
+              handleSelectedDates={handleSelectedDates} 
+              name="from" 
+              minDate={
+                new Date(new Date().setFullYear(new Date().getFullYear() - 5))
+              }
+              maxDate={new Date()}
+              defaultValue={filter.from}
+              />
+              <DateInput
+                handleSelectedDates={handleSelectedDates}
+                name="to"
+                minDate={filter.from}
+                maxDate={new Date()}
+                          defaultValue={filter.to}
 
               />
             </LocalizationProvider>

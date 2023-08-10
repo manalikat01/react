@@ -37,7 +37,6 @@ export const chartOptions = {
     }
   },
   xaxis: {
-    // type: 'datetime',
     labels: {
       formatter: (val: string) => {
         return new Date(val).toDateString();
