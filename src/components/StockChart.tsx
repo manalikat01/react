@@ -26,19 +26,17 @@ const StockChart: React.FC<{ filter: RequestToCandle }> = ({
   });
 
 
-  const [type, setType] = useState<string>(
-    "all"
-  );
+  const [stockPriceType, setStockPriceType] = useState<string>("all");
 
-  const [res, setRes] = useState<Stock[]>(
+  const [stockChartValues, setStockChartValues] = useState<Stock[]>(
     [
       {
         c: [], o: [], l: [], h: [], t: [], s: ''
 
       }]
   );
+  
   const updateChart = async (req: { from: any; to: any; list: any; resolution: any; }) => {
-    // console.log('API called');
     try {
       const result = await fetchHistoricalData(
         req.resolution,
@@ -46,17 +44,15 @@ const StockChart: React.FC<{ filter: RequestToCandle }> = ({
         req.to,
         req.list
       );
-      // console.log('Response added')
-
-      setRes(result)
+      setStockChartValues(result)
 
       // format data as per chart
-      const format = result.map((res: any, index: number) => {
+      const format = result.map((stockChartValues: any, index: number) => {
         const name = filter && filter.list && filter.list[index] && filter.list[index].displaySymbol;
 
         return {
           name,
-          data: res && res['s'] === 'ok' ? convertStockToChart(res)
+          data: stockChartValues && stockChartValues['s'] === 'ok' ? convertStockToChart(stockChartValues)
             : []
         }
       });
@@ -77,9 +73,8 @@ const StockChart: React.FC<{ filter: RequestToCandle }> = ({
   };
 
   const handleChangeType = (e: any) => {
-    // console.log(e.target)
-    setType(e.target.value);
-    const format = res.map((d: any, index: number) => {
+    setStockPriceType(e.target.value);
+    const format = stockChartValues.map((d: any, index: number) => {
       const name = filter && filter.list && filter.list[index] && filter.list[index].displaySymbol;
 
       if (e.target.value === "all") {
@@ -113,20 +108,17 @@ const StockChart: React.FC<{ filter: RequestToCandle }> = ({
 
   useEffect(() => {
     if (filter && filter.list && filter.list.length > 0) {
-      // console.log(filter,'call changess')
-
       updateChart(filter);
     }
-    // console.log(filter,'filter from stocks')
   }, [filter]);
 
   if (options && options.series && options.series.length == 0) {
-    return <div className="no-chart-container">No data found</div>
+    return <div className="no-chart-container">Chart data not available!</div>
   }
   return (
     <div className="chart-container">
       <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">Type</InputLabel>
+        <InputLabel id="demo-simple-select-label">stockPriceType</InputLabel>
         <Select
           sx={{
             width: '100%',
@@ -134,7 +126,7 @@ const StockChart: React.FC<{ filter: RequestToCandle }> = ({
           }}
           labelId="demo-simple-select-label"
           id="demo-simple-select"
-          value={type}
+          value={stockPriceType}
           label="Select Price"
           onChange={(e) => handleChangeType(e)}
 
@@ -148,18 +140,18 @@ const StockChart: React.FC<{ filter: RequestToCandle }> = ({
 
         </Select>
       </FormControl>
-      {type == "all" ?
+      {stockPriceType == "all" ?
         <ReactApexChart
           options={options.option}
           series={options.series}
-          type={"candlestick"}
+          stockPriceType={"candlestick"}
           height={320}
           width={700}
           key="candlestick"
         /> :
         <ReactApexChart options={lineOptions.option}
           series={lineOptions.series}
-          type={"area"}
+          stockPriceType={"area"}
           height={320}
           width={700}
           key="area"

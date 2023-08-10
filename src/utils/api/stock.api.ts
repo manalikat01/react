@@ -22,9 +22,7 @@ export const fetchHistoricalData = async (
   const toDate = convertDateToUnixTimestamp(new Date(to));
   const requests = list.map((entry) => fetch(`${basePath}/stock/candle?symbol=${entry.symbol}&exchange=US&resolution=${resolution}&from=${fromDate}&to=${toDate}&token=${process.env.REACT_APP_API_KEY}`));
   const responses = await Promise.all(requests);
-
   const promises = responses.map((response) => response.json());
-  // console.log(promises );
 
   return await Promise.all(promises);
 };

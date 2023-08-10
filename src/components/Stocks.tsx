@@ -9,7 +9,7 @@ import { DatePicker, DateValidationError, LocalizationProvider } from "@mui/x-da
 import '../App.css';
 import { initialCandleRequest } from "../constant";
 import { useStockContext } from "../context";
-import { fetchStockDetails, RequestToCandle, Symbol } from '../utils';
+import { fetchStockDetails, RequestToCandle } from '../utils';
 
 import StockChart from "./StockChart";
 import { ViewSelectedStock } from "./ViewSelectedStock";
@@ -29,7 +29,6 @@ export const Stocks: React.FC = () => {
       case 'invalidDate': {
         return 'Your date is not valid';
       }
-
       default: {
         return '';
       }
@@ -49,10 +48,6 @@ export const Stocks: React.FC = () => {
   };
 
   const handleSubmit = () => {
-    // console.log({
-    //   ...filter,
-    //   list: selectedStocks
-    // }, 'filterProps');
     setFilterProp({
       ...filter,
       list: selectedStocks
@@ -105,7 +100,7 @@ export const Stocks: React.FC = () => {
                     width: '100%',
                     maxWidth: 550,
                   }}
-                  id="checkboxes-tags-demo"
+                  data-testid="autocomplete-input"
                   options={list}
                   value={selectedStocks}
                   filterOptions={filterOptions}
@@ -119,7 +114,6 @@ export const Stocks: React.FC = () => {
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      // label="Select Stocks for details view"
                       placeholder="Select stock for details view"
                     />
                   )}
@@ -133,13 +127,14 @@ export const Stocks: React.FC = () => {
               <DatePicker
                 onChange={(e) => handleChangeDates(e, "from")}
                 value={dayjs(filter.from)}
-                // onError={(newError) => setError(newError)}
                 slotProps={{
                   textField: {
                     helperText: errorMessage,
                   },
                 }}
                 maxDate={dayjs(new Date())}
+                data-testid="from-date"
+
               />
 
               <DatePicker
@@ -153,6 +148,7 @@ export const Stocks: React.FC = () => {
                     helperText: errorMessage,
                   },
                 }}
+                data-testid="to-date"
 
               />
             </LocalizationProvider>

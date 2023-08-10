@@ -23,7 +23,7 @@ export const convertStockToChart = (data: Stock) => {
 export const convertToSingleValueChart = (price: number[], time: number[]) => {
   return price ? price.map((item: any, index: number) => {
     return [
-      new Date(time[index]).getTime(),
+      new Date(time[index] * 1000).getTime(),
       item
     ]
 
