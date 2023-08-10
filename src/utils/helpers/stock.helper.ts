@@ -5,11 +5,16 @@ export const convertDateToUnixTimestamp = (date: Date) => {
   return Math.floor(date.getTime() / 1000);
 };
 
+export const convertUnixTimestampTodate = (date: number) => {
+  return new Date(date * 1000);
+};
+
 /* Convert API response to chart data*/
 export const convertStockToChart = (data: Stock) => {
   return data ? data.c.map((item: any, index: number) => {
+    console.log()
     return {
-      x: new Date(data.t[index] * 1000),
+      x: convertUnixTimestampTodate(data.t[index]),
       y: [
         item,
         data.o[index],

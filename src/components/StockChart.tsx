@@ -26,7 +26,7 @@ const StockChart: React.FC<{ filter: RequestToCandle }> = ({
   });
 
 
-  const [stockPriceDefination, setStockPriceType] = useState<string>("all");
+  const [stockPriceDefination, setStockPrice] = useState<string>("all");
   const [stockChartValues, setStockChartValues] = useState<Stock[]>(
     [
       {
@@ -72,7 +72,7 @@ const StockChart: React.FC<{ filter: RequestToCandle }> = ({
   };
 
   const handleChangeType = (e: any) => {
-    setStockPriceType(e.target.value);
+    setStockPrice(e.target.value);
     const format = stockChartValues.map((d: any, index: number) => {
       const name = filter && filter.list && filter.list[index] && filter.list[index].displaySymbol;
 
@@ -139,7 +139,7 @@ const StockChart: React.FC<{ filter: RequestToCandle }> = ({
 
         </Select>
       </FormControl>
-      {stockPriceDefination == "all" ?
+      {stockPriceDefination === "all" ?
         <ReactApexChart
           options={options.option}
           series={options.series}

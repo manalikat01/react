@@ -165,10 +165,18 @@ export const Stocks: React.FC = () => {
   const handleSelectedStocks = (selectedStocks: Symbol[]) => {
     console.log(selectedStocks);
     setSelectedStocks(selectedStocks);
+    setFilterValues({
+      ...filter,
+      list: selectedStocks
+    })
   }
 
   const handleSelectedDates = (e: any, name: string) => {
     console.log(e, name);
+    setFilterValues({
+      ...filter,
+      [name]: e
+    })
   };
 
   return (
