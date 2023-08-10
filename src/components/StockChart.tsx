@@ -106,8 +106,19 @@ const StockChart: React.FC<{ filter: RequestToCandle }> = ({
   };
 
   useEffect(() => {
+
+    console.log(filter,filter)
     if (filter && filter.list && filter.list.length > 0) {
       updateChart(filter);
+    }else{
+      setOption({
+        ...options,
+        series: []
+      });
+      setLineChartOption({
+        ...options,
+        series: []
+      });
     }
   }, [filter]);
 

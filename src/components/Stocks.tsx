@@ -22,11 +22,13 @@ const filterOptions = (options: any[], state: any) => {
 };
 
 export const SearchContainer: React.FC<{
-  handleSelectedStocks: (selectedStocks: Symbol[]) => void
+  handleSelectedStocks: (selectedStocks: Symbol[]) => void,
+  updatedStocks: Symbol[]
 }> = ({
-  handleSelectedStocks
+  handleSelectedStocks,
+  updatedStocks
 }) => {
-    const [selectedStocks, setSelectedStocks] = useState([]);
+    const [selectedStocks, setSelectedStocks] = useState<Symbol[]>([]);
     // const [error, setError] = useState(false);
     const [stocks, setStocksAvailable] = useState([]);
 
@@ -53,6 +55,12 @@ export const SearchContainer: React.FC<{
         setStocksAvailable([]);
       };
     }, []);
+
+    useEffect(() => {
+      console.log(updatedStocks, 'updatedStocks');
+      setSelectedStocks(updatedStocks);
+
+    }, [updatedStocks])
 
     return <div className="search-filter">
       <Autocomplete
@@ -117,6 +125,8 @@ export const DateInput: React.FC<{
   const handleChangeDates = (e: any) => {
     if (!error && errorMessage == '') {
       handleSelectedDates(e, name);
+    } else {
+      handleSelectedDates(null, name);
     }
   };
   return (
@@ -129,15 +139,16 @@ export const DateInput: React.FC<{
           helperText: error ? errorMessage : '',
         },
       }}
+
       minDate={dayjs(minDate)}
       maxDate={dayjs(maxDate)}
+
     />
   );
 };
 
 export const Stocks: React.FC = () => {
   const [filter, setFilterValues] = useState<RequestToCandle>(initialCandleRequest); // form values
-  const { setStockList } = useStockContext(); // selected values from array
 
   const [selectedStocks, setSelectedStocks] = useState<Symbol[]>([]);
   const [filterProps, setFilterProp] = useState<RequestToCandle>(initialCandleRequest);
@@ -145,10 +156,12 @@ export const Stocks: React.FC = () => {
 
 
   const handleSubmit = () => {
-    setFilterProp({
-      ...filter,
-      list: selectedStocks
-    })
+    if (filter && filter.from && filter.to) {
+      setFilterProp({
+        ...filter,
+        list: selectedStocks
+      })
+    }
   }
 
 
@@ -163,7 +176,6 @@ export const Stocks: React.FC = () => {
 
 
   const handleSelectedStocks = (selectedStocks: Symbol[]) => {
-    console.log(selectedStocks);
     setSelectedStocks(selectedStocks);
     setFilterValues({
       ...filter,
@@ -177,6 +189,7 @@ export const Stocks: React.FC = () => {
       ...filter,
       [name]: e
     })
+
   };
 
   return (
@@ -184,64 +197,29 @@ export const Stocks: React.FC = () => {
       <div className="header">
         <InfoContainer />
         <div className="filter-container">
-
-          <SearchContainer handleSelectedStocks={handleSelectedStocks} />
-
-
-          {/* </div> */}
+          <SearchContainer handleSelectedStocks={handleSelectedStocks} updatedStocks={filter.list} />
           <div className="range-filter">
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-              {/* <DatePicker
-                onChange={(e) => handleChangeDates(e, "from")}
-                value={dayjs(filter.from)}
-                slotProps={{
-                  textField: {
-                    helperText: errorMessage,
-                  },
-                }}
-                maxDate={dayjs(new Date())}
-                data-testid="from-date"
-
-              />
-
-              <DatePicker
-                onChange={(e) => handleChangeDates(e, "to")}
-                value={dayjs(filter.to)}
-                minDate={dayjs(filter.from)}
-                maxDate={dayjs(new Date())}
-                onError={(newError) => setError(newError)}
-                slotProps={{
-                  textField: {
-                    helperText: errorMessage,
-                  },
-                }}
-                data-testid="to-date"
-
-              /> */}
-
-              <DateInput 
-              handleSelectedDates={handleSelectedDates} 
-              name="from" 
-              minDate={
-                new Date(new Date().setFullYear(new Date().getFullYear() - 5))
-              }
-              maxDate={new Date()}
-              defaultValue={filter.from}
+              <DateInput
+                handleSelectedDates={handleSelectedDates}
+                name="from"
+                minDate={
+                  new Date(new Date().setFullYear(new Date().getFullYear() - 5))
+                }
+                maxDate={new Date()}
+                defaultValue={filter.from}
               />
               <DateInput
                 handleSelectedDates={handleSelectedDates}
                 name="to"
                 minDate={filter.from}
                 maxDate={new Date()}
-                          defaultValue={filter.to}
+                defaultValue={filter.to}
 
               />
             </LocalizationProvider>
-
-
-
             <div className="button-container">
-              <Button color="primary" size="small" variant="contained" onClick={handleSubmit}>Submit</Button>
+              <Button color="primary" size="small" variant="contained" disabled={true} onClick={handleSubmit}>Submit</Button>
               <Button color="primary" size="small" variant="contained" onClick={handleReset}>Reset</Button>
             </div>
           </div >
