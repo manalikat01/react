@@ -1,17 +1,17 @@
 import React, { useState } from "react";
-import { Stocks } from "./components";
+import { LandingPage } from "./components";
 import { StockContext } from "./context";
+import { StockSymbol } from "./utils";
 import "./App.css";
 
 const App: React.FC = () => {
-  const [selectedStocks, setSelectedStocks] = useState<Symbol[]>([])
+  const [selectedStocks, setSelectedStocks] = useState<StockSymbol[]>([]);
 
   return (
     <StockContext.Provider value={{ selectedStocks, setSelectedStocks }}>
-      <Stocks />
-    </StockContext.Provider >
+      <LandingPage />
+    </StockContext.Provider>
   );
-}
-
+};
 
 export default App;

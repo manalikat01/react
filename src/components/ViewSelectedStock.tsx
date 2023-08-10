@@ -54,3 +54,12 @@ export const ViewSelectedStock: React.FC = () => {
     </div>
   );
 };
+
+// Title static element
+export const InfoContainer: React.FC = () => {
+  return (
+    <div className="title">
+      US Stock Exchange
+    </div>
+  )
+}

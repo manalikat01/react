@@ -14,10 +14,20 @@ export const mockStockDetails = [{
     },
 ];
 
+// mock for chart UI without selecting list
 export const mockRequestForCandel= {
     from: subtractYears(),
     to: new Date(),
     list: [],
+    resolution: 1
+  }
+
+  
+// mock for chart UI after selecting list
+export const mockRequestWithData ={
+    from: subtractYears(),
+    to: new Date(),
+    list: mockStockDetails,
     resolution: 1
   }
 
