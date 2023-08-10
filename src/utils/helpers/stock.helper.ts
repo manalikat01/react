@@ -9,7 +9,7 @@ export const convertDateToUnixTimestamp = (date: Date) => {
 export const convertStockToChart = (data: Stock) => {
   return data ? data.c.map((item: any, index: number) => {
     return {
-      x: new Date(data.t[index]),
+      x: new Date(data.t[index] * 1000),
       y: [
         item,
         data.o[index],
@@ -20,4 +20,14 @@ export const convertStockToChart = (data: Stock) => {
   }) : [];
 };
 
-export const subtractYears= () => new Date(new Date().setFullYear(new Date().getFullYear() - 1))
+export const convertToSingleValueChart = (price: number[], time: number[]) => {
+  return price ? price.map((item: any, index: number) => {
+    return [
+      new Date(time[index]).getTime(),
+      item
+    ]
+
+  }) : [];
+};
+
+export const subtractYears = () => new Date(new Date().setFullYear(new Date().getFullYear() - 1))

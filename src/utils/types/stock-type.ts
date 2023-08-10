@@ -28,5 +28,5 @@ export type RequestToCandle =
     from: Date,
     to: Date,
     list: Symbol[],
-    resolution: string
+    resolution: number
   }

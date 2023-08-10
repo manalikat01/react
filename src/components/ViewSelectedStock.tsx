@@ -3,7 +3,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 
-// View Selected Stock
+// View Selected Stock Cards
 const ViewStock: React.FC<{ stocksSelected: Symbol[] }> = ({
   stocksSelected
 }) => {
@@ -31,10 +31,18 @@ const ViewStock: React.FC<{ stocksSelected: Symbol[] }> = ({
                   sx={{ fontSize: 14 }}
                   color="text.secondary"
                   gutterBottom
-                  component="span"
+                  component="div"
                 >
-                  {ele.figi} - {ele.type}
+                  {ele.figi}  <Typography
+                    sx={{ fontSize: 12 }}
+                    color="text.secondary"
+                    gutterBottom
+                    component="div"
+                  >
+                     - {ele.type}
+                  </Typography>
                 </Typography>
+
                 <Typography variant="body2"> {ele.description}</Typography>
               </CardContent>
             </Card>

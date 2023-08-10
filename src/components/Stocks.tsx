@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import dayjs from "dayjs";
-import Autocomplete from '@mui/material/Autocomplete';
+import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-import { Button, Card, CardContent } from "@mui/material";
+import { Button, Card, CardContent, FilterOptionsState } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker, DateValidationError, LocalizationProvider } from "@mui/x-date-pickers";
 
@@ -50,8 +50,11 @@ export const StockContainer: React.FC = () => {
     });
   };
 
-
   const handleSubmit = () => {
+    console.log({
+      ...filter,
+      list: selectedStocks
+    }, 'filterProps');
     setFilterProp({
       ...filter,
       list: selectedStocks
@@ -62,6 +65,10 @@ export const StockContainer: React.FC = () => {
   const handleReset = () => {
     setSelectedStocks([]);
     setFilterValues(initialCandleRequest);
+    setFilterProp({
+      ...filter,
+      list: []
+    })
   }
 
   useEffect(() => {
@@ -81,7 +88,11 @@ export const StockContainer: React.FC = () => {
     };
   }, []);
 
+  const defaultFilterOptions = createFilterOptions();
 
+  const filterOptions = (options: any[], state: any) => {
+    return defaultFilterOptions(options, state).slice(0, 100);
+  };
   return (
     <div className="App">
 
@@ -101,18 +112,19 @@ export const StockContainer: React.FC = () => {
                   id="checkboxes-tags-demo"
                   options={list}
                   value={selectedStocks}
+                  filterOptions={filterOptions}
                   disableCloseOnSelect
                   onChange={handleChangeStocks}
-                  getOptionLabel={(option: Symbol) => option && option.displaySymbol ? option.displaySymbol : ''}
+                  getOptionLabel={(option: any) => option && option.displaySymbol ? option.displaySymbol : ''}
                   getOptionDisabled={(options) => (selectedStocks.length > 2 ? true : false)}
                   renderGroup={(params) => params as unknown as React.ReactNode}
                   style={{ width: 500 }}
+                 
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label="Select Stocks for details view"
+                      // label="Select Stocks for details view"
                       placeholder="Select stock for details view"
-                      required
                     />
                   )}
                 /> : <div className="no-selected-stock">
@@ -125,7 +137,7 @@ export const StockContainer: React.FC = () => {
               <DatePicker
                 onChange={(e) => handleChangeDates(e, "from")}
                 value={dayjs(filter.from)}
-                onError={(newError) => setError(newError)}
+                // onError={(newError) => setError(newError)}
                 slotProps={{
                   textField: {
                     helperText: errorMessage,
@@ -149,6 +161,8 @@ export const StockContainer: React.FC = () => {
               />
             </LocalizationProvider>
 
+
+
             <div className="button-container">
               <Button color="primary" size="small" variant="contained" onClick={handleSubmit}>Submit</Button>
               <Button color="primary" size="small" variant="contained" onClick={handleReset}>Reset</Button>
@@ -170,10 +184,10 @@ export const StockContainer: React.FC = () => {
 export const InfoContainer: React.FC = () => {
   return (
     <div className="title">
-      <Card>
+      {/* <Card> */}
         US Stock Exchange
-        <CardContent>You can select at most 3 stock for  detail pricing</CardContent>
-      </Card>
+        {/* <CardContent>You can select at most 3 stock for  detail pricing</CardContent> */}
+      {/* </Card> */}
     </div>
   )
 }

@@ -36,15 +36,8 @@ export const chartOptions = {
       }
     }
   },
-  title: {
-    text: "",
-    align: "left"
-  },
-  tooltip: {
-    enabled: true
-  },
   xaxis: {
-    type: "category",
+    // type: 'datetime',
     labels: {
       formatter: (val: string) => {
         return new Date(val).toDateString();
@@ -60,10 +53,43 @@ export const chartOptions = {
   }
 }
 
+export const chartLineOption = {
+  chart: {
+    type: 'area',
+    height: 350,
+    zoom: {
+      autoScaleYaxis: true,
+    },
+  }
+}
+
 // chart candle request
-export const initialCandleRequest ={
+export const initialCandleRequest = {
   from: subtractYears(),
   to: new Date(),
   list: [],
-  resolution :'W'
+  resolution: 1
 }
+
+export const priceTypes =[
+  {
+    name: 'All',
+    value: 'all'
+  },
+  {
+    name: 'Open',
+    value: 'o'
+  },
+  {
+    name: 'Close',
+    value: 'c'
+  },
+  {
+    name: 'High',
+    value: 'h'
+  },
+  {
+    name: 'Low',
+    value: 'l'
+  }
+]

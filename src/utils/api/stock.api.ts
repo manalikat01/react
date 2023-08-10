@@ -13,16 +13,15 @@ export const fetchStockDetails = async () => {
 
 // Request stock prices in US Exchange
 export const fetchHistoricalData = async (
-    resolution: string,
+    resolution: number,
     from: Date,
     to: Date,
     list: any[]
 ) => {
-  const fromDate = convertDateToUnixTimestamp(from)
-  const toDate = convertDateToUnixTimestamp(to);
+  const fromDate = convertDateToUnixTimestamp(new Date(from))
+  const toDate = convertDateToUnixTimestamp(new Date(to));
   const requests = list.map((entry) => fetch(`${basePath}/stock/candle?symbol=${entry.symbol}&exchange=US&resolution=${resolution}&from=${fromDate}&to=${toDate}&token=${process.env.REACT_APP_API_KEY}`));
   const responses = await Promise.all(requests);
-  console.log(responses );
 
   const promises = responses.map((response) => response.json());
   console.log(promises );
