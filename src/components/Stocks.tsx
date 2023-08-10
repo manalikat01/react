@@ -9,7 +9,7 @@ import { DatePicker, DateValidationError, LocalizationProvider } from "@mui/x-da
 import '../App.css';
 import { initialCandleRequest } from "../constant";
 import { useStockContext } from "../context";
-import { fetchStockDetails, RequestToCandle, Symbol } from '../utils';
+import { fetchStockDetails, RequestStockPrices, StockSymbol } from '../utils';
 
 import StockChart from "./StockChart";
 import { ViewSelectedStock } from "./ViewSelectedStock";
@@ -22,8 +22,8 @@ const filterOptions = (options: any[], state: any) => {
 };
 
 export const SearchContainer: React.FC<{
-  handleSelectedStocks: (selectedStocks: Symbol[]) => void,
-  updatedStocks: Symbol[]
+  handleSelectedStocks: (selectedStocks: StockSymbol[]) => void,
+  updatedStocks: StockSymbol[]
 }> = ({
   handleSelectedStocks,
   updatedStocks
@@ -148,10 +148,10 @@ export const DateInput: React.FC<{
 };
 
 export const Stocks: React.FC = () => {
-  const [filter, setFilterValues] = useState<RequestToCandle>(initialCandleRequest); // form values
+  const [filter, setFilterValues] = useState<RequestStockPrices>(initialCandleRequest); // form values
 
-  const [selectedStocks, setSelectedStocks] = useState<Symbol[]>([]);
-  const [filterProps, setFilterProp] = useState<RequestToCandle>(initialCandleRequest);
+  const [selectedStocks, setSelectedStocks] = useState<StockSymbol[]>([]);
+  const [filterProps, setFilterProp] = useState<RequestStockPrices>(initialCandleRequest);
 
 
 
@@ -175,7 +175,7 @@ export const Stocks: React.FC = () => {
   }
 
 
-  const handleSelectedStocks = (selectedStocks: Symbol[]) => {
+  const handleSelectedStocks = (selectedStocks: StockSymbol[]) => {
     setSelectedStocks(selectedStocks);
     setFilterValues({
       ...filter,

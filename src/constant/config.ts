@@ -3,10 +3,9 @@ import { subtractYears } from "../utils";
 // API end url
 export const basePath = "https://finnhub.io/api/v1";
 
-// chart configuration for all prices comparision chart
-export const chartOptions = {
+// Chart configuration for all prices comparision chart
+export const candlestickChartOptions = {
   chart: {
-    height: 350,
     type: "candlestick",
     toolbar: {
       show: true,
@@ -52,7 +51,22 @@ export const chartOptions = {
   }
 }
 
-// configuration of single price chart
+
+// Request data for stock prices API
+export const initialCandleRequest = {
+  from: subtractYears(),
+  to: new Date(),
+  list: [],
+  resolution: 1
+}
+
+// Response data for stock prices API
+export const initialCandleResponse = [{
+  c: [], o: [], l: [], h: [], t: [], s: ''
+}]
+
+
+// Configuration of chart specific to single price type
 export const lineChartConfiguration = {
   chart: {
     type: 'area',
@@ -63,16 +77,8 @@ export const lineChartConfiguration = {
   }
 }
 
-// chart candle request
-export const initialCandleRequest = {
-  from: subtractYears(),
-  to: new Date(),
-  list: [],
-  resolution: 1
-}
-
-// dropdown values for opne, close, high, low stock price
-export const PriceDefination = [
+// Dropdown values for opne, close, high, low stock price
+export const priceDefination = [
   {
     name: 'All',
     value: 'all'
@@ -94,3 +100,6 @@ export const PriceDefination = [
     value: 'l'
   }
 ]
+
+// Dropdown default value for price type input;
+export const defaultValueForPriceType = "all";

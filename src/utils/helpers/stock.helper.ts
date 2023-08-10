@@ -1,4 +1,4 @@
-import { Stock } from "../types";
+import {  StockPrices } from "../types";
 
 // Converts  Date to  Unix Time  for stocks price
 export const convertDateToUnixTimestamp = (date: Date) => {
@@ -11,7 +11,7 @@ export const convertUnixTimestampTodate = (date: number) => {
 };
 
 // Returns data for selected stocks
-export const convertStockToChart = (data: Stock) => {
+export const convertStockToChart = (data: StockPrices) => {
   return data ? data.c.map((item: any, index: number) => {
     return {
       x: convertUnixTimestampTodate(data.t[index]),
@@ -25,7 +25,7 @@ export const convertStockToChart = (data: Stock) => {
   }) : [];
 };
 
-// Returns data for selected price value like open price, low price
+// Returns data for selected price type like open price, low price
 export const convertToSinglePriceChart = (price: number[], time: number[]) => {
   return price ? price.map((item: any, index: number) => {
     return [

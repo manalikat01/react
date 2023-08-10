@@ -1,5 +1,5 @@
 // type defination for Stock
-export type Symbol = {
+export type StockSymbol = {
   currency: string,
   description: string,
   displaySymbol: string,
@@ -12,23 +12,16 @@ export type Symbol = {
   symbol2: string
 }
 
-// type defination for Stock
+// type defination for Stock Prices Response 
 export type StockPrices = {
   c: any[], o: any[], l: any[], h: any[], t: any[], s: string
 }
 
-export type ChartSeries = {
-  name: string;
-  data: {
-    x: Date;
-    y: any[];
-  }[];
-}
-
-export type RequestToCandle =
+// type defination for Stock Prices Request
+export type RequestStockPrices =
   {
     from: Date,
     to: Date,
-    list: Symbol[],
+    list: StockSymbol[],
     resolution: number
   }
