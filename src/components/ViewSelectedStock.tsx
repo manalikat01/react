@@ -1,19 +1,18 @@
-import React, { memo } from 'react';
+import React from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
-import { Symbol } from '../utils'
+
+import { useStockContext } from '../context';
 
 // View Selected Stock Cards
-export const ViewSelectedStock: React.FC<{ stocksSelected: Symbol[] }> = ({
-  stocksSelected
-}) => {
+export const ViewSelectedStock: React.FC = () => {
+  const { selectedStocks } = useStockContext()
 
   return (
     <div className="card-view">
-
-      {stocksSelected && stocksSelected.length > 0 ?
-        stocksSelected.map((ele: any, index: number) => {
+      {selectedStocks && selectedStocks.length > 0 ?
+        selectedStocks.map((ele: any, index: number) => {
           return (
             <Card sx={{ maxWidth: 345, margin: 2 }} key={index}>
               <CardContent>
@@ -40,7 +39,7 @@ export const ViewSelectedStock: React.FC<{ stocksSelected: Symbol[] }> = ({
                     gutterBottom
                     component="div"
                   >
-                     - {ele.type}
+                    - {ele.type}
                   </Typography>
                 </Typography>
 
@@ -55,5 +54,3 @@ export const ViewSelectedStock: React.FC<{ stocksSelected: Symbol[] }> = ({
     </div>
   );
 };
-
-// export default memo(ViewSelectedStock);

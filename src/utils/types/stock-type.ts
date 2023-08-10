@@ -1,3 +1,4 @@
+// type defination for Stock
 export type Symbol = {
   currency: string,
   description: string,
@@ -11,7 +12,8 @@ export type Symbol = {
   symbol2: string
 }
 
-export type Stock = {
+// type defination for Stock
+export type StockPrices = {
   c: any[], o: any[], l: any[], h: any[], t: any[], s: string
 }
 

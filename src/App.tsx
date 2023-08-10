@@ -4,10 +4,10 @@ import { StockContext } from "./context";
 import "./App.css";
 
 const App: React.FC = () => {
-  const [stockList, setStockList] = useState<Symbol[]>([])
+  const [selectedStocks, setSelectedStocks] = useState<Symbol[]>([])
 
   return (
-    <StockContext.Provider value={{ stockList, setStockList }}>
+    <StockContext.Provider value={{ selectedStocks, setSelectedStocks }}>
       <Stocks />
     </StockContext.Provider >
   );

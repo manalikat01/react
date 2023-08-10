@@ -3,7 +3,7 @@ import { subtractYears } from "../utils";
 // API end url
 export const basePath = "https://finnhub.io/api/v1";
 
-// chart configuration options
+// chart configuration for all prices comparision chart
 export const chartOptions = {
   chart: {
     height: 350,
@@ -52,7 +52,8 @@ export const chartOptions = {
   }
 }
 
-export const chartLineOption = {
+// configuration of single price chart
+export const lineChartConfiguration = {
   chart: {
     type: 'area',
     height: 350,
@@ -70,7 +71,8 @@ export const initialCandleRequest = {
   resolution: 1
 }
 
-export const priceTypes =[
+// dropdown values for opne, close, high, low stock price
+export const PriceDefination = [
   {
     name: 'All',
     value: 'all'

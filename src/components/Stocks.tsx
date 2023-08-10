@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-import { Button, Card, CardContent, FilterOptionsState } from "@mui/material";
+import { Button } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker, DateValidationError, LocalizationProvider } from "@mui/x-date-pickers";
 
@@ -28,14 +28,14 @@ export const SearchContainer: React.FC<{
   handleSelectedStocks,
   updatedStocks
 }) => {
-    const [selectedStocks, setSelectedStocks] = useState<Symbol[]>([]);
-    // const [error, setError] = useState(false);
+    const { selectedStocks, setSelectedStocks } = useStockContext()
     const [stocks, setStocksAvailable] = useState([]);
 
     const handleChangeStocks = (event: any, value: any) => {
       setSelectedStocks(value);
       handleSelectedStocks(value)
       // setError(value < 3);
+      
     };
 
 
@@ -58,7 +58,7 @@ export const SearchContainer: React.FC<{
 
     useEffect(() => {
       console.log(updatedStocks, 'updatedStocks');
-      setSelectedStocks(updatedStocks);
+      // setSelectedStocks(updatedStocks);
 
     }, [updatedStocks])
 
@@ -227,7 +227,7 @@ export const Stocks: React.FC = () => {
       </div>
 
       <div className="main">
-        <ViewSelectedStock stocksSelected={selectedStocks} />
+        <ViewSelectedStock />
         <StockChart filter={filterProps} />
       </div>
     </div >

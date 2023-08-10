@@ -1,9 +1,9 @@
 import React, { memo, useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
 import { chartLineOption, chartOptions, priceTypes } from "../constant";
 import { convertStockToChart, fetchHistoricalData, RequestToCandle, convertToSingleValueChart, Stock, } from "../utils";
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
 const StockChart: React.FC<{ filter: RequestToCandle }> = ({
   filter
