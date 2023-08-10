@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StockContainer } from "./components";
+import { Stocks } from "./components";
 import { StockContext } from "./context";
 import "./App.css";
 
@@ -8,7 +8,7 @@ const App: React.FC = () => {
 
   return (
     <StockContext.Provider value={{ stockList, setStockList }}>
-      <StockContainer />
+      <Stocks />
     </StockContext.Provider >
   );
 }

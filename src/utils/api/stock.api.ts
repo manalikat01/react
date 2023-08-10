@@ -24,7 +24,7 @@ export const fetchHistoricalData = async (
   const responses = await Promise.all(requests);
 
   const promises = responses.map((response) => response.json());
-  console.log(promises );
+  // console.log(promises );
 
   return await Promise.all(promises);
 };

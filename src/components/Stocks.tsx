@@ -11,11 +11,11 @@ import { initialCandleRequest } from "../constant";
 import { useStockContext } from "../context";
 import { fetchStockDetails, RequestToCandle, Symbol } from '../utils';
 
-import Chart from "./Chart";
-import ViewStock from "./ViewSelectedStock";
+import StockChart from "./StockChart";
+import { ViewSelectedStock } from "./ViewSelectedStock";
 
 
-export const StockContainer: React.FC = () => {
+export const Stocks: React.FC = () => {
   const [filter, setFilterValues] = useState<RequestToCandle>(initialCandleRequest); // form values
   const [error, setError] = React.useState<DateValidationError | null>(null); // error 
   const { setStockList } = useStockContext(); // selected values from array
@@ -36,8 +36,6 @@ export const StockContainer: React.FC = () => {
     }
   }, [error])
 
-
-
   const handleChangeStocks = (event: any, value: any) => {
     setSelectedStocks(value);
     setStockList(value);
@@ -51,10 +49,10 @@ export const StockContainer: React.FC = () => {
   };
 
   const handleSubmit = () => {
-    console.log({
-      ...filter,
-      list: selectedStocks
-    }, 'filterProps');
+    // console.log({
+    //   ...filter,
+    //   list: selectedStocks
+    // }, 'filterProps');
     setFilterProp({
       ...filter,
       list: selectedStocks
@@ -95,10 +93,8 @@ export const StockContainer: React.FC = () => {
   };
   return (
     <div className="App">
-
       <div className="header">
         <InfoContainer />
-
         <div className="filter-container">
           <div className="search-filter">
             {
@@ -119,7 +115,7 @@ export const StockContainer: React.FC = () => {
                   getOptionDisabled={(options) => (selectedStocks.length > 2 ? true : false)}
                   renderGroup={(params) => params as unknown as React.ReactNode}
                   style={{ width: 500 }}
-                 
+
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -168,13 +164,12 @@ export const StockContainer: React.FC = () => {
               <Button color="primary" size="small" variant="contained" onClick={handleReset}>Reset</Button>
             </div>
           </div >
-
         </div>
       </div>
 
       <div className="main">
-        <ViewStock stocksSelected={selectedStocks} />
-        <Chart filter={filterProps} />
+        <ViewSelectedStock stocksSelected={selectedStocks} />
+        <StockChart filter={filterProps} />
       </div>
     </div >
   )
@@ -184,10 +179,7 @@ export const StockContainer: React.FC = () => {
 export const InfoContainer: React.FC = () => {
   return (
     <div className="title">
-      {/* <Card> */}
-        US Stock Exchange
-        {/* <CardContent>You can select at most 3 stock for  detail pricing</CardContent> */}
-      {/* </Card> */}
+      US Stock Exchange
     </div>
   )
 }

@@ -1,4 +1,26 @@
-export const mockStockDetails = [{ "currency": "USD", "description": "GIGAMEDIA LTD", "displaySymbol": "GIGM", "figi": "BBG000BQGYG0", "isin": null, "mic": "XNAS", "shareClassFIGI": "BBG001SDX8R5", "symbol": "GIGM", "symbol2": "", "type": "Common Stock" }, { "currency": "USD", "description": "INTEGRATED WELLNESS ACQ - A", "displaySymbol": "WEL", "figi": "BBG013BWN343", "isin": null, "mic": "XNYS", "shareClassFIGI": "BBG013BWN3Z9", "symbol": "WEL", "symbol2": "", "type": "Common Stock" }];
+import { subtractYears } from "../helpers";
+
+export const mockStockDetails = [{
+    "currency": "USD",
+    "description": "GIGAMEDIA LTD",
+    "displaySymbol": "GIGM",
+    "figi": "BBG000BQGYG0",
+    "isin": null,
+    "mic": "XNAS",
+    "shareClassFIGI": "BBG001SDX8R5",
+    "symbol": "GIGM",
+    "symbol2": "",
+    "type": "Common Stock"
+    },
+];
+
+export const mockRequestForCandel= {
+    from: subtractYears(),
+    to: new Date(),
+    list: [],
+    resolution: 1
+  }
+
 export const mockStockChartOptions = {
     series: [
         {

@@ -2,9 +2,10 @@ import React, { memo } from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
+import { Symbol } from '../utils'
 
 // View Selected Stock Cards
-const ViewStock: React.FC<{ stocksSelected: Symbol[] }> = ({
+export const ViewSelectedStock: React.FC<{ stocksSelected: Symbol[] }> = ({
   stocksSelected
 }) => {
 
@@ -55,5 +56,4 @@ const ViewStock: React.FC<{ stocksSelected: Symbol[] }> = ({
   );
 };
 
-export default memo(ViewStock);
-
+// export default memo(ViewSelectedStock);

@@ -5,7 +5,7 @@ import { chartLineOption, chartOptions, priceTypes } from "../constant";
 import { convertStockToChart, fetchHistoricalData, RequestToCandle, convertToSingleValueChart, Stock, } from "../utils";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
-const Chart: React.FC<{ filter: RequestToCandle }> = ({
+const StockChart: React.FC<{ filter: RequestToCandle }> = ({
   filter
 }) => {
 
@@ -38,7 +38,7 @@ const Chart: React.FC<{ filter: RequestToCandle }> = ({
       }]
   );
   const updateChart = async (req: { from: any; to: any; list: any; resolution: any; }) => {
-    console.log('API called');
+    // console.log('API called');
     try {
       const result = await fetchHistoricalData(
         req.resolution,
@@ -46,7 +46,7 @@ const Chart: React.FC<{ filter: RequestToCandle }> = ({
         req.to,
         req.list
       );
-      console.log('Response added')
+      // console.log('Response added')
 
       setRes(result)
 
@@ -67,7 +67,7 @@ const Chart: React.FC<{ filter: RequestToCandle }> = ({
       });
 
     } catch (error) {
-      console.log('API called error', error);
+      // console.log('API called error', error);
 
       setOption({
         ...options,
@@ -77,7 +77,7 @@ const Chart: React.FC<{ filter: RequestToCandle }> = ({
   };
 
   const handleChangeType = (e: any) => {
-    console.log(e.target)
+    // console.log(e.target)
     setType(e.target.value);
     const format = res.map((d: any, index: number) => {
       const name = filter && filter.list && filter.list[index] && filter.list[index].displaySymbol;
@@ -113,11 +113,11 @@ const Chart: React.FC<{ filter: RequestToCandle }> = ({
 
   useEffect(() => {
     if (filter && filter.list && filter.list.length > 0) {
-      console.log(filter,'call changess')
+      // console.log(filter,'call changess')
 
       updateChart(filter);
     }
-    console.log(filter,'filter from stocks')
+    // console.log(filter,'filter from stocks')
   }, [filter]);
 
   if (options && options.series && options.series.length == 0) {
@@ -169,4 +169,4 @@ const Chart: React.FC<{ filter: RequestToCandle }> = ({
   )
 };
 
-export default memo(Chart);
+export default memo(StockChart);
