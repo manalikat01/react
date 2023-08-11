@@ -20,7 +20,7 @@ const AutocompleteStyle = {
 };
 
 /*Search Component for searching available stocks */
-const SearchContainer: React.FC = () => {
+const SearchContainer: React.FC<{ error: boolean }> = ({ error }) => {
   const { selectedStocks, setSelectedStocks } = useStockContext();
   const [stocks, setStocksAvailable] = useState([]);
   const handleChangeStocks = (event: any, value: any) => {
@@ -44,6 +44,27 @@ const SearchContainer: React.FC = () => {
     };
   }, []);
 
+  // error messages for autocomplete
+  const errorMessage = React.useMemo(() => {
+    const stockCount =
+      error && selectedStocks && selectedStocks.length
+        ? selectedStocks.length
+        : 0;
+    if (error) {
+      switch (stockCount) {
+        case 0: {
+          return "Plesse select stock!";
+        }
+
+        default: {
+          return null;
+        }
+      }
+    } else {
+      return null;
+    }
+  }, [error, selectedStocks]);
+
   return (
     <div className="search-filter">
       <Autocomplete
@@ -65,10 +86,9 @@ const SearchContainer: React.FC = () => {
         renderInput={(params) => (
           <TextField
             {...params}
-            
             placeholder="Select stock for details view"
-            // error={error}
-            // helperText={error && "You can select at most 3 stock!"}
+            error={error}
+            helperText={errorMessage}
           />
         )}
         autoHighlight
@@ -104,7 +124,6 @@ const DateInput: React.FC<{
     }
   }, [error]);
 
-
   const handleChangeDates = (e: any) => {
     if (!error && errorMessage === "") {
       handleSelectedDates(e, name);
@@ -117,7 +136,7 @@ const DateInput: React.FC<{
       defaultValue={dayjs(defaultValue)}
       onError={(newError) => setError(newError)}
       onChange={(e) => handleChangeDates(e)}
-      label= {name}
+      label={name}
       slotProps={{
         textField: {
           helperText: error ? errorMessage : "",
@@ -126,7 +145,19 @@ const DateInput: React.FC<{
       minDate={dayjs(minDate)}
       maxDate={dayjs(maxDate)}
       format="DD-MM-YYYY"
-
+     
+      // onSelectedSectionsChange={}={params => (
+      //   <TextField
+      //     {...params}
+      //     InputProps={{
+      //       readOnly: true,
+      //     sx={{
+      //       "& .MuiInputBase-input": {
+      //         caretColor: 'transparent'
+      //       }
+      //     }}
+      //   />
+      // )}
     />
   );
 };

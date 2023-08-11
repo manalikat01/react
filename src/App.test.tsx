@@ -48,7 +48,7 @@ test("should render stock information UI", async () => {
 
 test("Renders search Container and perform events", async () => {
   const { container, getByTestId } = await act(async () =>
-    render(<SearchContainer />)
+    render(<SearchContainer error={false}/>)
   );
   expect(container.getElementsByClassName("search-filter").length).toBe(1);
   const autocomplete = getByTestId("autocomplete-input");
@@ -89,13 +89,17 @@ describe("Render Selected Stocks Card Container", () => {
 
 describe("Render Chart Container", () => {
   test("should render chart block", async () => {
-    const { container } = render(<StockChart filter={mockRequestWithData} />);
+    const { container } = render(<StockChart filter={mockRequestWithData} isSubmitClicked={false} handleResetChart={function (isSubmitClicked: boolean): void {
+      throw new Error("Function not implemented.");
+    } } />);
     expect(container.firstChild).toHaveClass("no-chart-container");
     expect(screen.getByText("Chart data not available!"));
   });
 
   test("should render no chart block", async () => {
-    const { container } = render(<StockChart filter={mockRequestForCandel} />);
+    const { container } = render(<StockChart filter={mockRequestForCandel} isSubmitClicked={true} handleResetChart={function (isSubmitClicked: boolean): void {
+      throw new Error("Function not implemented.");
+    } } />);
     expect(container.firstChild).toHaveClass("no-chart-container");
     expect(screen.getByText("Chart data not available!"));
   });

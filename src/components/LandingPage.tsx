@@ -14,17 +14,21 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 
 export const LandingPage: React.FC = () => {
   const [filter, setFilterValues] =
-    useState<RequestStockPrices>(initialCandleRequest); 
+    useState<RequestStockPrices>(initialCandleRequest);
   const { selectedStocks, setSelectedStocks } = useStockContext();
   const [filterProps, setFilterProp] =
     useState<RequestStockPrices>(initialCandleRequest);
+    const [isSubmitClicked, setSubmitClicked] =
+    useState<boolean>(false);
 
   const handleSubmit = () => {
+    setSubmitClicked(true)
     if (filter && filter.from && filter.to) {
       setFilterProp({
         ...filter,
         list: selectedStocks,
       });
+      setSubmitClicked(false)
     }
   };
 
@@ -44,12 +48,16 @@ export const LandingPage: React.FC = () => {
     });
   };
 
+  useEffect(()=>{
+      setSubmitClicked(selectedStocks && selectedStocks.length ===3)
+  },[selectedStocks])
+
   return (
     <div className="App">
       <div className="header">
         <InfoContainer />
         <div className="filter-container">
-          <SearchContainer />
+          <SearchContainer error={isSubmitClicked} />
           <div className="range-filter">
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DateInput
@@ -94,7 +102,7 @@ export const LandingPage: React.FC = () => {
 
       <div className="main">
         <ViewSelectedStock />
-        <StockChart filter={filterProps} />
+        <StockChart filter={filterProps} isSubmitClicked={isSubmitClicked} handleResetChart={(val:boolean)=> setSubmitClicked(val)}/>
       </div>
     </div>
   );

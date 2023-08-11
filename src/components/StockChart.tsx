@@ -17,7 +17,11 @@ import {
   StockPrices,
 } from "../utils";
 
-const StockChart: React.FC<{ filter: RequestStockPrices }> = ({ filter }) => {
+const StockChart: React.FC<{
+  filter: RequestStockPrices;
+  isSubmitClicked: boolean;
+  handleResetChart: (isSubmitClicked: boolean) => void;
+}> = ({ filter, isSubmitClicked, handleResetChart }) => {
   const [options, setOption] = useState<{
     series: any[];
     option: any;
@@ -84,6 +88,12 @@ const StockChart: React.FC<{ filter: RequestStockPrices }> = ({ filter }) => {
     }
   }, [filter]);
 
+  useEffect(() => {
+    if (stockPriceDefination !== defaultValueForPriceType) {
+      setStockPriceDefination(defaultValueForPriceType);
+    }
+  }, [isSubmitClicked, stockPriceDefination]);
+
   {
     /*Request Stock Price */
   }
@@ -96,7 +106,6 @@ const StockChart: React.FC<{ filter: RequestStockPrices }> = ({ filter }) => {
         req.list
       );
       setStockChartValues(result);
-
       // format data as per chart
       const format = result.map((stockChartValues: any, index: number) => {
         const name =
@@ -118,11 +127,14 @@ const StockChart: React.FC<{ filter: RequestStockPrices }> = ({ filter }) => {
         ...options,
         series: format,
       });
+      handleResetChart(false);
+
     } catch (error) {
       setOption({
         ...options,
         series: [],
       });
+      handleResetChart(false);
     }
   };
 
