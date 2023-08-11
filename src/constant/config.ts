@@ -21,7 +21,6 @@ export const candlestickChartOptions = {
         reset: true,
         customIcons: []
       },
-      autoSelected: 'zoom'
     },
     plotOptions: {
       candlestick: {

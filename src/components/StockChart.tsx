@@ -1,6 +1,13 @@
 import React, { memo, useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import {
+  CircularProgress,
+  Fade,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@mui/material";
 
 import {
   lineChartConfiguration,
@@ -16,6 +23,7 @@ import {
   convertToSinglePriceChart,
   StockPrices,
 } from "../utils";
+import { TogglePrice } from "./InputComponents";
 
 const StockChart: React.FC<{
   filter: RequestStockPrices;
@@ -35,50 +43,70 @@ const StockChart: React.FC<{
   const [stockChartValues, setStockChartValues] = useState<StockPrices[]>(
     initialCandleResponse
   );
+
+  const [loader, setLoader] = useState(false);
+
   const chartType =
     stockPriceDefination === defaultValueForPriceType ? "candlestick" : "area";
 
   const handleChangePriceType = (e: any) => {
-    setStockPriceDefination(e.target.value);
-    const formatedResponse = stockChartValues.map((d: any, index: number) => {
-      const name =
-        filter &&
-        filter.list &&
-        filter.list[index] &&
-        filter.list[index].displaySymbol
-          ? filter.list[index].displaySymbol
-          : null;
-      return {
-        name: name,
-        data:
-          e.target.value === defaultValueForPriceType
-            ? d && d["s"] === "ok"
-              ? convertStockToChart(d)
-              : []
-            : d && d["s"] === "ok"
-            ? convertToSinglePriceChart(d[e.target.value], d["t"])
-            : [],
-      };
-    });
+    setStockPriceDefination(e);
+    try{
+      setLoader(true);
+      const formatedResponse = stockChartValues.map((d: any, index: number) => {
+        const name =
+          filter &&
+          filter.list &&
+          filter.list[index] &&
+          filter.list[index].displaySymbol
+            ? filter.list[index].displaySymbol
+            : null;
+        return {
+          name: name,
+          data:
+            e === defaultValueForPriceType
+              ? d && d["s"] === "ok"
+                ? convertStockToChart(d)
+                : []
+              : d && d["s"] === "ok"
+              ? convertToSinglePriceChart(d[e], d["t"])
+              : [],
+        };
+      });
+  
+      setOption({
+        ...options,
+        option:
+          e === defaultValueForPriceType
+            ? {
+                ...options.option,
+                ...candlestickChartOptions,
+              }
+            : {
+                ...options.option,
+                ...lineChartConfiguration,
+              },
+        series: formatedResponse,
+      });
+      setLoader(false);
 
-    setOption({
-      ...options,
-      option:
-        e.target.value === defaultValueForPriceType
-          ? {
-              ...options.option,
-              ...candlestickChartOptions,
-            }
-          : {
-              ...options.option,
-              ...lineChartConfiguration,
-            },
-      series: formatedResponse,
-    });
+    }catch(e){
+      setLoader(false);
+    }
   };
 
   useEffect(() => {
-    if (filter && filter.list && filter.list.length > 0) {
+    const startDate = new Date(filter.from);
+    const endDate = new Date(filter.to);
+
+    if (
+      endDate >= startDate &&
+      !isNaN(startDate.getTime()) &&
+      !isNaN(startDate.getTime()) &&
+      filter &&
+      filter.list &&
+      filter.list.length > 0
+    ) {
       checkLatestStockPrice(filter);
     } else {
       setOption({
@@ -88,17 +116,12 @@ const StockChart: React.FC<{
     }
   }, [filter]);
 
-  useEffect(() => {
-    if (stockPriceDefination !== defaultValueForPriceType) {
-      setStockPriceDefination(defaultValueForPriceType);
-    }
-  }, [isSubmitClicked, stockPriceDefination]);
-
   {
     /*Request Stock Price */
   }
   const checkLatestStockPrice = async (req: RequestStockPrices) => {
     try {
+      setLoader(true);
       const result = await fetchHistoricalData(
         req.resolution,
         req.from,
@@ -127,9 +150,11 @@ const StockChart: React.FC<{
         ...options,
         series: format,
       });
-      handleResetChart(false);
+      setLoader(false);
 
+      // handleResetChart(false);
     } catch (error) {
+      setLoader(false);
       setOption({
         ...options,
         series: [],
@@ -141,56 +166,36 @@ const StockChart: React.FC<{
   {
     /* No data bloack for chart */
   }
-  if (options && options.series && options.series.length === 0) {
-    return <div className="no-chart-container">Chart data not available!</div>;
-  }
 
   return (
     <div className="chart-container">
-      {/* Dropdown for to navigate between open, close, high, low prices */}
+      {loader ? (
+        <CircularProgress />
+      ) : options && options.series && options.series.length === 0 ? (
+        <div className="no-chart-container">Chart data not available!</div>
+      ) : (
+        <React.Fragment>
+          <TogglePrice handlePrice={handleChangePriceType} />
 
-      <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">Price Type</InputLabel>
-        <Select
-          sx={{
-            width: "100%",
-            maxWidth: 230,
-          }}
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={stockPriceDefination}
-          label="Select Price"
-          onChange={(e) => handleChangePriceType(e)}
-          autoFocus
-        >
-          {priceDefination &&
-            priceDefination.map((price: any, index: number) => {
-              return (
-                <MenuItem key={`menu-${index}`} value={price.value}>
-                  {price.name}
-                </MenuItem>
-              );
-            })}
-        </Select>
-      </FormControl>
-
-      {/* Stock Price Chart */}
-      <ReactApexChart
-        options={options.option}
-        series={options.series}
-        type={
-          stockPriceDefination === defaultValueForPriceType
-            ? "candlestick"
-            : "area"
-        }
-        height={320}
-        width={700}
-        key={
-          stockPriceDefination === defaultValueForPriceType
-            ? "candlestick1"
-            : "area1"
-        }
-      />
+          <ReactApexChart
+            className="stock-chart"
+            options={options.option}
+            series={options.series}
+            type={
+              stockPriceDefination === defaultValueForPriceType
+                ? "candlestick"
+                : "area"
+            }
+            height={320}
+            width={"100%"}
+            key={
+              stockPriceDefination === defaultValueForPriceType
+                ? "candlestick1"
+                : "area1"
+            }
+          />
+        </React.Fragment>
+      )}
     </div>
   );
 };

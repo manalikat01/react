@@ -18,17 +18,23 @@ export const LandingPage: React.FC = () => {
   const { selectedStocks, setSelectedStocks } = useStockContext();
   const [filterProps, setFilterProp] =
     useState<RequestStockPrices>(initialCandleRequest);
-    const [isSubmitClicked, setSubmitClicked] =
-    useState<boolean>(false);
+  const [isSubmitClicked, setSubmitClicked] = useState<boolean>(false);
 
   const handleSubmit = () => {
-    setSubmitClicked(true)
-    if (filter && filter.from && filter.to) {
+    setSubmitClicked(true);
+    const startDate = new Date(filter.from);
+    const endDate = new Date(filter.to);
+    if (
+      endDate >= startDate &&
+      !isNaN(startDate.getTime()) &&
+      !isNaN(startDate.getTime()) &&
+      selectedStocks &&
+      selectedStocks.length > 0
+    ) {
       setFilterProp({
         ...filter,
         list: selectedStocks,
       });
-      setSubmitClicked(false)
     }
   };
 
@@ -48,16 +54,13 @@ export const LandingPage: React.FC = () => {
     });
   };
 
-  useEffect(()=>{
-      setSubmitClicked(selectedStocks && selectedStocks.length ===3)
-  },[selectedStocks])
-
   return (
     <div className="App">
       <div className="header">
-        <InfoContainer />
+        {/* <InfoContainer /> */}
+        <SearchContainer isSubmitClicked={isSubmitClicked} />
+
         <div className="filter-container">
-          <SearchContainer error={isSubmitClicked} />
           <div className="range-filter">
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DateInput
@@ -68,6 +71,7 @@ export const LandingPage: React.FC = () => {
                 }
                 maxDate={new Date()}
                 defaultValue={filter.from}
+                isSubmitClicked={isSubmitClicked}
               />
               <DateInput
                 handleSelectedDates={handleSelectedDates}
@@ -75,7 +79,7 @@ export const LandingPage: React.FC = () => {
                 minDate={filter.from}
                 maxDate={new Date()}
                 defaultValue={filter.to}
-
+                isSubmitClicked={isSubmitClicked}
               />
             </LocalizationProvider>
             <div className="button-container">
@@ -101,8 +105,12 @@ export const LandingPage: React.FC = () => {
       </div>
 
       <div className="main">
-        <ViewSelectedStock />
-        <StockChart filter={filterProps} isSubmitClicked={isSubmitClicked} handleResetChart={(val:boolean)=> setSubmitClicked(val)}/>
+        {/* <ViewSelectedStock /> */}
+        <StockChart
+          filter={filterProps}
+          isSubmitClicked={isSubmitClicked}
+          handleResetChart={(val: boolean) => setSubmitClicked(val)}
+        />
       </div>
     </div>
   );
