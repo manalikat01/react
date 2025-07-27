@@ -1,4 +1,4 @@
-name: Angular CLI Workflow
+name: React Workflow
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  angular-cli:
+  react-cli:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,7 +24,7 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build Angular app
+      - name: Build react app
         run: npm run build
 
       - name: Deploy to GitHub Pages
